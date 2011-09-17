@@ -443,7 +443,11 @@ function createHTMLDocumentByString(str) {
 		return new DOMParser().parseFromString(str, 'application/xhtml+xml')
 	}
 	var html = strip_html_tag(str)
-	var htmlDoc = document.implementation.createDocument(null, 'html', null)
+	//var htmlDoc = document.implementation.createDocument(null, 'html', null)
+	var XHTML_NS = 'http://www.w3.org/1999/xhtml';
+	var doctype = document.implementation.createDocumentType('html', '-//W3C//DTD HTML 4.01//EN', 'http://www.w3.org/TR/html4/strict.dtd');
+	var htmlDoc = document.implementation.createDocument(XHTML_NS, 'html', doctype);
+
 	var fragment = createDocumentFragmentByString(html)
 	try {
 		fragment = htmlDoc.adoptNode(fragment)
