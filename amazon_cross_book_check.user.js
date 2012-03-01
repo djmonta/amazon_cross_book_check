@@ -41,6 +41,40 @@ var SITEINFO = [
 		isbn13: true,
 		//disabled: true
 	},
+	{
+		label: '創価大学中央図書館',
+		url: 'http://jweb2.j.soka.ac.jp/scripts/mgwns30.so?MGWLPN=OPAC&NSPACE=SCL&isbn=',
+		afterISBN: '',
+		regexp: /<td>(中央.*)<\/td>/,
+		ifFound: function(checker, res){
+			var tr = $x("//table[@border='1']/tbody/tr", res);
+			if ( tr.length != 0 ){
+				var libs = tr;
+				var content = [];
+				if (libs.length > 0) {
+					libs.forEach(function(lib){
+						var kan = lib.childNodes[1].textContent;
+						var room = lib.childNodes[3].textContent;
+						var status = lib.childNodes[13].textContent;
+						if (status.indexOf("貸") != -1) {
+							var t =  (room.length > 0) ? [room, "(", status, ")"].join("") : kan;
+							content.push(t);
+						}
+					})
+				}
+				if (content.length > 0) {
+					var id = libs[1].childNodes[9].textContent;
+					content.push([" [", id, "]"].join(""));
+					checker.content = content.join(" ");
+				} else {
+					checker.content = "";
+					checker.status = 0;
+				}
+			}
+			checker.loadContent();
+		}
+	},
+
 	/* template
 	{
 		label: '',
